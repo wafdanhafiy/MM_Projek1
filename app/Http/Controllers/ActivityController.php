@@ -15,12 +15,18 @@ class ActivityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $acticity = Activity::orderBy('name','ASC')->get();
+        $user = $request->user();
+        
+        $activity = Activity::
+        where('user_id', $user['id'])->
+        orderBy('name','ASC')->
+        get();
+
         $response = [
             'message' => 'List Activity Ordered by Name',
-            'data' => $acticity
+            'data' => $activity,
         ];
 
         return response()->json($response, Response::HTTP_OK);
@@ -36,7 +42,10 @@ class ActivityController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required'],
-            'desc' => ['required']
+            'desc' => ['required'],
+            'start' => ['required'],
+            'user_id' => ['required'],
+            'category_id' => ['required']
         ]);
 
         if($validator->fails()){

@@ -13,15 +13,19 @@ class CreateActivitiesTable extends Migration
      */
     public function up()
     {
+
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('desc');
             $table->datetime('start');
             $table->datetime('finish');
+            $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->constrained();
             $table->timestamps();
         });
+
+       
     }
 
     /**
