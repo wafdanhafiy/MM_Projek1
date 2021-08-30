@@ -33,8 +33,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 });
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
-
+Route::get('/showuser/{id}', [AuthController::class, 'show']);
 
 
 
@@ -45,11 +46,6 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 // Default For Studying
-
-
-
-
-
 
 //CRUD Category Route
 // Route::get('/category', [CategoryController::class, 'index']);

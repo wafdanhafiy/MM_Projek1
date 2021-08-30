@@ -98,7 +98,10 @@ class ActivityController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => ['required'],
-            'desc' => ['required']
+            'desc' => ['required'],
+            'start' => ['required'],
+            'user_id' => ['required'],
+            'category_id' => ['required']
         ]);
 
         if($validator->fails()){
