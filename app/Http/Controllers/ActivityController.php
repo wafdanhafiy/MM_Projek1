@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\HelperApi\HelperApi;
 use App\Models\Activity;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -18,11 +19,10 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        
-        $activity = Activity::
-        where('user_id', $user['id'])->
-        orderBy('name','ASC')->
-        get();
+
+        $activity = Activity::where('user_id', $user['id'])
+            ->orderBy('name', 'ASC')
+            ->get();
 
         $response = [
             'message' => 'List Activity Ordered by Name',
@@ -45,24 +45,27 @@ class ActivityController extends Controller
             'desc' => ['required'],
             'start' => ['required'],
             'user_id' => ['required'],
-            'category_id' => ['required']
+            'category_id' => ['required'],
         ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        if ($validator->fails()) {
+            return response()->json(
+                $validator->errors(),
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
         try {
             $activity = Activity::create($request->all());
             $response = [
                 'message' => 'activity created',
-                'data' => $activity
+                'data' => $activity,
             ];
 
             return response()->json($response, Response::HTTP_CREATED);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => "Failed " . $e->errorInfo
+                'message' => 'Failed ' . $e->errorInfo,
             ]);
         }
     }
@@ -78,7 +81,7 @@ class ActivityController extends Controller
         $activity = Activity::findOrFail($id);
         $response = [
             'message' => 'Detail Of Activity',
-            'data' => $activity
+            'data' => $activity,
         ];
 
         return response()->json($response, Response::HTTP_OK);
@@ -93,7 +96,6 @@ class ActivityController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $activity = Activity::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -101,24 +103,27 @@ class ActivityController extends Controller
             'desc' => ['required'],
             'start' => ['required'],
             'user_id' => ['required'],
-            'category_id' => ['required']
+            'category_id' => ['required'],
         ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        if ($validator->fails()) {
+            return response()->json(
+                $validator->errors(),
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
         try {
             $activity->update($request->all());
             $response = [
                 'message' => 'Activity updated',
-                'data' => $activity
+                'data' => $activity,
             ];
 
             return response()->json($response, Response::HTTP_OK);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => "Failed " . $e->errorInfo
+                'message' => 'Failed ' . $e->errorInfo,
             ]);
         }
     }
@@ -135,14 +140,58 @@ class ActivityController extends Controller
         try {
             $activity->delete();
             $response = [
-                'message' => 'Activity deleted'
+                'message' => 'Activity deleted',
             ];
 
             return response()->json($response, Response::HTTP_OK);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => "Failed " . $e->errorInfo
+                'message' => 'Failed ' . $e->errorInfo,
             ]);
         }
+    }
+
+    public function stats(Request $request)
+    {
+        $user = $request->user();
+
+        $object = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $object[] =  HelperApi::createobject($user, $i);
+        }
+
+        //count all
+
+        //work count
+        $work = Activity::where('user_id', $user['id'])
+            ->where('category_id', '1')
+            ->orderBy('name', 'ASC')
+            ->count();
+
+        //learn count
+        $learn = Activity::where('user_id', $user['id'])
+            ->where('category_id', '2')
+            ->orderBy('name', 'ASC')
+            ->count();
+
+        //play count
+        $play = Activity::where('user_id', $user['id'])
+            ->where('category_id', '3')
+            ->orderBy('name', 'ASC')
+            ->count();
+
+
+        //response
+        $response = [
+            'total' => [
+                'work' => $work,
+                'learn' => $learn,
+                'play' => $play,
+            ],
+            'timeframe' =>  $object,
+        ];
+
+        return response()->json($response, Response::HTTP_OK);
     }
 }
