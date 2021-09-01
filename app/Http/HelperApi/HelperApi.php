@@ -15,7 +15,7 @@ class HelperApi
 
         //count a day
 
-        $today = Activity::whereDate('start', now()->subDays(0))
+        $today = Activity::whereDate('start', now()->subDays($i))
             ->where('user_id', $user['id'])
             ->orderBy('name', 'ASC')
             ->count();
