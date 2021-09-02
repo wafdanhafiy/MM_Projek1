@@ -37,7 +37,7 @@ class HelperApi
         //play count
         $play = Activity::whereDate('start', now()->subDays($i))
             ->where('user_id', $user['id'])
-            ->where('play', 'play')
+            ->where('name', 'play')
             ->orderBy('name', 'ASC')
             ->count();
 
