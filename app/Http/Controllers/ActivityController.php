@@ -194,4 +194,19 @@ class ActivityController extends Controller
 
         return response()->json($response, Response::HTTP_OK);
     }
+
+    public function getactivitybycategory($id)
+    {
+        $activity = Activity::where('category_id', $id)
+            ->orderBy('start', 'ASC')
+            ->groupBy('start')
+            ->get();
+
+        $response = [
+            'message' => 'List Activity Ordered by Name',
+            'data' => $activity,
+        ];
+
+        return response()->json($response, Response::HTTP_OK);
+    }
 }

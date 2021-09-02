@@ -23,13 +23,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::group(['middleware' => 'auth:sanctum'], function(){
+Route::group(['middleware' => 'auth:sanctum'], function () {
     //Dashboard
     Route::get('/stats', [ActivityController::class, 'stats']);
-    
+    Route::get('/activbycat', [ActivityController::class, 'getactivitybycategory']);
+
     //CRUD
-    Route::resource('/category', CategoryController::class)->except('create','edit');
-    Route::resource('/activity', ActivityController::class)->except('create','edit');
+    Route::resource('/category', CategoryController::class)->except('create', 'edit');
+    Route::resource('/activity', ActivityController::class)->except('create', 'edit');
 
     //Accout Management
     Route::get('/logout', [AuthController::class, 'logout']);
@@ -56,4 +57,3 @@ Route::get('/showuser/{id}', [AuthController::class, 'show']);
 // Route::put('/category/{id}',[CategoryController::class, 'update']);
 // Route::get('/category/{id}',[CategoryController::class, 'show']);
 // Route::delete('/category/{id}',[CategoryController::class, 'destroy']);
-
