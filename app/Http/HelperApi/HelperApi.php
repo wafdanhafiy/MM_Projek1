@@ -23,21 +23,21 @@ class HelperApi
         //work count
         $work = Activity::whereDate('start', now()->subDays($i))
             ->where('user_id', $user['id'])
-            ->where('name', 'work')
+            ->where('category_id', '3')
             ->orderBy('name', 'ASC')
             ->count();
 
         //learn count
         $learn = Activity::whereDate('start', now()->subDays($i))
             ->where('user_id', $user['id'])
-            ->where('name', 'learn')
+            ->where('category_id', '4')
             ->orderBy('name', 'ASC')
             ->count();
 
         //play count
         $play = Activity::whereDate('start', now()->subDays($i))
             ->where('user_id', $user['id'])
-            ->where('name', 'play')
+            ->where('category_id', '5')
             ->orderBy('name', 'ASC')
             ->count();
 
