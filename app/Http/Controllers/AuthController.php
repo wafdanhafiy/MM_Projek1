@@ -12,15 +12,16 @@ use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
 {
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-    
+
         $user = User::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationValidationException::withMessages([
                 'message' => ['The provided credentials are incorrect.'],
             ]);
@@ -29,30 +30,31 @@ class AuthController extends Controller
         $token = $user->createToken('UserToken')->plainTextToken;
 
         return Response()->json([
-            'message'=>'Authorized',
+            'message' => 'Authorized',
             'user' => $user,
             'token' => $token
-        ],200);
+        ], 200);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         //take user data form request
         $user =  $request->user();
         //delete token user 
         $user->tokens()->delete();
 
         return Response()->json([
-            'message'=>'logout',
-        ],200);
+            'message' => 'logout',
+        ], 200);
     }
 
     public function register(Request $request)
     {
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed'],
         ]);
 
         $user = User::create([
@@ -67,7 +69,7 @@ class AuthController extends Controller
             'token' => $token
         ];
 
-        return response($response,201);
+        return response($response, 201);
     }
 
     public function show($id)
@@ -80,5 +82,4 @@ class AuthController extends Controller
 
         return response()->json($response, Response::HTTP_OK);
     }
-    
 }
