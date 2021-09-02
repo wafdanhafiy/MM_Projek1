@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware' => 'auth:sanctum'], function () {
     //Dashboard
     Route::get('/stats', [ActivityController::class, 'stats']);
-    Route::get('/activbycat', [ActivityController::class, 'getactivitybycategory']);
+    Route::get('/activbycat/{id}', [ActivityController::class, 'getactivitybycategory']);
 
     //CRUD
     Route::resource('/category', CategoryController::class)->except('create', 'edit');
