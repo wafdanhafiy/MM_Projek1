@@ -199,7 +199,6 @@ class ActivityController extends Controller
     {
         $activity = Activity::where('category_id', $id)
             ->orderBy('start', 'ASC')
-            ->groupBy('start')
             ->get();
 
         $response = [
