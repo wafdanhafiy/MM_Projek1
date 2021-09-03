@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -81,5 +82,31 @@ class AuthController extends Controller
         ];
 
         return response()->json($response, Response::HTTP_OK);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed'],
+        ]);
+
+        try {
+            $user->update($request->all());
+            $response = [
+                'message' => 'Category updated',
+            ];
+
+            return response()->json($response, Response::HTTP_OK);
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => "Failed " . $e->errorInfo
+            ]);
+        }
+
+        return response($response, 201);
     }
 }

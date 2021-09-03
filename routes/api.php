@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('/activity', ActivityController::class)->except('create', 'edit');
 
     //Accout Management
+    Route::put('/user/{id}', [AuthController::class, 'update']);
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 
