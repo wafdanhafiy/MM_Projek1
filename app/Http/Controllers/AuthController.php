@@ -96,7 +96,7 @@ class AuthController extends Controller
         try {
             $user->update($request->all());
             $response = [
-                'message' => 'Category updated',
+                'message' => 'User updated',
             ];
 
             return response()->json($response, Response::HTTP_OK);
